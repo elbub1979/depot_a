@@ -27,7 +27,7 @@ class ProductTest < ActiveSupport::TestCase
     product.price = 0
     assert product.invalid?
     assert_equal ['must be greater than or equal to 0.01'],
-                product.errors[:price]
+                 product.errors[:price]
     product.price = 1
     assert product.valid?
   end
@@ -66,20 +66,15 @@ class ProductTest < ActiveSupport::TestCase
                           image_url:
                             'fred.gif')
     assert product.invalid?
+    assert_equal ['has already been taken'], product.errors[:title]
+    # уже было использовано
   end
-  assert_equal ['has already been taken'], product.errors[:title]
-  # уже было использовано
 
-  test ' product is not valid without a unique title - i18n' do
-    product = Product.new(title:
-                            products(:ruby).title,
+  test 'product is not valid with a title less 10 symbols' do
+    product = Product.new(title: 'Title',
                           description: 'yyy',
-                          price:
-                            1,
-                          image_url:
-                            'fred.gif')
+                          price: 1,
+                          image_url: 'fred.gif')
     assert product.invalid?
   end
-  assert_equal [I18n.translate('activerecord.errors.messages.taken')],
-               product.errors[:title]
 end
